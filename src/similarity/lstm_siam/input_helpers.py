@@ -18,11 +18,6 @@ class InputHelper(object):
     pre_emb = dict()
     vocab_processor = None
     def cleanText(self, s):
-        s = re.sub(r"[^\x00-\x7F]+"," ", s)
-        s = re.sub(r'[\~\!\`\^\*\{\}\[\]\#\<\>\?\+\=\-\_\(\)]+',"",s)
-        s = re.sub(r'( [0-9,\.]+)',r"\1 ", s)
-        s = re.sub(r'\$'," $ ", s)
-        s = re.sub('[ ]+',' ', s)
         return s.lower()
 
     def getVocab(self,vocab_path, max_document_length,filter_h_pad):
@@ -77,6 +72,7 @@ class InputHelper(object):
                 x1.append(l[1].lower())
                 x2.append(l[0].lower())
             y.append(int(l[2]))
+        print("Loaded %d samples of training data" % (len(y)))
         return np.asarray(x1),np.asarray(x2),np.asarray(y)
 
     def getTsvDataCharBased(self, filepath):
@@ -171,6 +167,7 @@ class InputHelper(object):
             x1_text, x2_text, y=self.getTsvData(training_paths)
         # Build vocabulary
         print("Building vocabulary")
+        print(x1_text)
         vocab_processor = MyVocabularyProcessor(max_document_length,min_frequency=0,is_char_based=is_char_based)
         vocab_processor.fit_transform(np.concatenate((x2_text,x1_text),axis=0))
         print("Length of loaded vocabulary ={}".format( len(vocab_processor.vocabulary_)))

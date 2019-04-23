@@ -9,16 +9,13 @@ from tensorflow.contrib import learn
 from tensorflow.python.platform import gfile
 from tensorflow.contrib import learn  # pylint: disable=g-bad-import-order
 
-TOKENIZER_RE = re.compile(r"[A-Z]{2,}(?![a-z])|[A-Z][a-z]+(?=[A-Z])|[\'\w\-]+",
-                          re.UNICODE)
-
 def tokenizer_char(iterator):
     for value in iterator:
         yield list(value)
 
 def tokenizer_word(iterator):
     for value in iterator:
-        yield TOKENIZER_RE.findall(value)
+        yield value.split()
     
 class MyVocabularyProcessor(learn.preprocessing.VocabularyProcessor):
     def __init__(self,
